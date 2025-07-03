@@ -1,0 +1,31 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "sqlite"                   // ou "postgresql", "mysql", etc.
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Animal {
+  id        Int      @id @default(autoincrement())
+  tag       String   @unique
+  weight    Float
+  location  String
+  createdAt DateTime @default(now())
+}
+
+model Paddock {
+  id        Int       @id @default(autoincrement())
+  path      Json
+  createdAt DateTime  @default(now())
+}
+
+model Marker {
+  id        Int      @id @default(autoincrement())
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+}
