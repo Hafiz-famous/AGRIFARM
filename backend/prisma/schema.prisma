@@ -1,7 +1,5 @@
-// prisma/schema.prisma
-
 datasource db {
-  provider = "sqlite"                   // ou "postgresql", "mysql", etc.
+  provider = "sqlite" // ou postgresql, mysql…
   url      = env("DATABASE_URL")
 }
 
@@ -11,21 +9,24 @@ generator client {
 
 model Animal {
   id        Int      @id @default(autoincrement())
-  tag       String   @unique
-  weight    Float
-  location  String
+  name      String
+  weight    Float?
+  location  String?
   createdAt DateTime @default(now())
 }
 
 model Paddock {
   id        Int       @id @default(autoincrement())
-  path      Json
+  name      String
+  path      Json      // tableau de coordonnées
   createdAt DateTime  @default(now())
 }
 
-model Marker {
-  id        Int      @id @default(autoincrement())
-  lat       Float
-  lng       Float
-  createdAt DateTime @default(now())
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String   @default("pending")
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
 }
