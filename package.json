@@ -8,21 +8,35 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@influxdata/influxdb-client": "^1.35.0",
     "@react-google-maps/api": "^2.20.7",
+    "@vitejs/plugin-react": "^4.7.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "express": "^5.1.0",
+    "react": "^19.1.0",
     "react-big-calendar": "^1.19.4",
-    "react-router-dom": "^7.6.2"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "vite": "^7.0.5"
   },
   "devDependencies": {
+    "@types/node": "^24.0.10",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.10"
-  }
-
+    "tailwindcss": "^4.1.11",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hafiz-famous/AGRIFARM.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hafiz-famous/AGRIFARM/issues"
+  },
+  "homepage": "https://github.com/Hafiz-famous/AGRIFARM#readme",
+  "description": ""
 }

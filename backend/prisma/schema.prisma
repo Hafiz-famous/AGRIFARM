@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite" // ou postgresql, mysql…
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -7,26 +7,82 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Animal {
+model Paddock {
   id        Int      @id @default(autoincrement())
   name      String
-  weight    Float?
-  location  String?
+  path      Json // tableau de { lat, lng }
   createdAt DateTime @default(now())
-}
-
-model Paddock {
-  id        Int       @id @default(autoincrement())
-  name      String
-  path      Json      // tableau de coordonnées
-  createdAt DateTime  @default(now())
+  paddockActions PaddockAction[]
+  animals   Animal[] 
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
-  status      String   @default("pending")
   dueDate     DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+}
+
+enum MovementType {
+  INCOMING
+  OUTGOING
+}
+
+model Animal {
+  id         Int        @id @default(autoincrement())
+  name       String
+  species    String
+  breed      String?
+  gender     String?
+  birthDate  DateTime?
+  weight     Float?
+  location  String?
+  health     String?
+  createdAt  DateTime    @default(now())
+  paddockId  Int?
+  paddock    Paddock?    @relation(fields: [paddockId], references: [id])
+
+  movements  Movement[]
+  feedings   Feeding[]
+  treatments Treatment[]
+}
+
+model Movement {
+  id       Int          @id @default(autoincrement())
+  type     MovementType
+  date     DateTime     @default(now())
+  animalId Int
+  animal   Animal       @relation(fields: [animalId], references: [id])
+}
+
+model Treatment {
+  id         Int       @id @default(autoincrement())
+  date       DateTime  @default(now())
+  type       String    // Ex: Vaccin, Vermifuge, Antibiotique
+  description String?  // Détails sur le traitement
+  veterinarian String? // Nom ou identifiant du véto
+  animalId   Int
+  animal     Animal    @relation(fields: [animalId], references: [id])
+}
+
+
+model Feeding {
+  id         Int       @id @default(autoincrement())
+  date       DateTime  @default(now())
+  type       String    // Ex: Foin, Complément, Eau
+  quantity   Float     // En kg ou litres
+  notes      String?   // Optionnel : observations
+  animalId   Int
+  animal     Animal    @relation(fields: [animalId], references: [id])
+}
+
+
+model PaddockAction {
+  id         Int      @id @default(autoincrement())
+  type        String
+  description String?
+  date       DateTime @default(now())
+  paddockId  Int
+  paddock    Paddock  @relation(fields: [paddockId], references: [id])
 }

@@ -1,8 +1,25 @@
-# agrifarm/docker-compose.yml
+version: '3.9'
+
 services:
+  # 1) Base de données PostgreSQL
+  db:
+    image: postgres:15
+    container_name: agrifarm-db
+    restart: always
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: agrifarm
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # 2) InfluxDB (optionnel)
   influxdb:
     image: influxdb:2.7
     container_name: influxdb
+    restart: always
     ports:
       - "8086:8086"
     environment:
@@ -11,21 +28,36 @@ services:
       DOCKER_INFLUXDB_INIT_PASSWORD: admin123
       DOCKER_INFLUXDB_INIT_ORG: my-org
       DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
 
+  # 3) API Node.js + Prisma
   api:
     build:
       context: ./backend
+      dockerfile: Dockerfile
     container_name: agrifarm-api
+    restart: on-failure
     ports:
-      - "3001:3001"
+      - "3001:4000"
+    environment:
+      DATABASE_URL: postgresql://prisma:prisma@db:5432/agrifarm?schema=public
+      PORT: 4000
     depends_on:
-      - influxdb
+      - db
 
+  # 4) Frontend React servi par Nginx
   web:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
     container_name: agrifarm-web
+    restart: on-failure
     ports:
       - "3000:80"
     depends_on:
       - api
+
+volumes:
+  db_data:
+  influxdb_data:
